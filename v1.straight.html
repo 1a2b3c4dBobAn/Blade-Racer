@@ -1,49 +1,226 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <link href="common.css" rel="stylesheet" type="text/css" />
-    <title></title>
-  </head>
-  <body>
+
+<html>
+<head>
+  <title>Javascript Racer - v1 (straight)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link href="common.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
 
 
-    <script src="stats.js"></script>
-    <script src="common.js"></script>
-    <scrpit>
+  <!-- <div id='instructions'>
+    <p>Use the <b>arrow keys</b> to drive the car.</p>
+  </div> -->
+
+    <canvas id="canvas">
+    </canvas>
+
+  <script src="common.js"></script>
+  <script>
+
+    var fps           = 30;                      // how many 'update' frames per second
+    var step          = 0.5/fps;                   // how long is each frame (in seconds)
+    var width         = 600;                    // logical canvas width
+    var height        = 360;                     // logical canvas height
+    var segments      = [];                      // array of road segments
+    var canvas        = Dom.get('canvas');       // our canvas...
+    var ctx           = canvas.getContext('2d'); // ...and its drawing context
+    var sprites       = null;                    // our spritesheet (loaded below)
+    var resolution    = null;                    // scaling factor to provide resolution independence (computed)
+    var roadWidth     = 1800;                    // actually half the roads width, easier math if the road spans from -roadWidth to +roadWidth
+    var segmentLength = 200;                     // length of a single segment
+    var rumbleLength  = 4;                       // number of segments per red/white rumble strip
+    var trackLength   = null;                    // z length of entire track (computed)
+    var lanes         = 2;                       // number of lanes
+    var fieldOfView   = 100;                     // angle (degrees) for field of view
+    var cameraHeight  = 650;                    // z height of camera
+    var cameraDepth   = null;                    // z distance camera is from screen (computed)
+    var drawDistance  = 300;                     // number of segments to draw
+    var playerX       = 0;                       // player x offset from center of road (-1 to 1 to stay independent of roadWidth)
+    var playerZ       = null;                    // player relative z distance from camera (computed)
+    var fogDensity    = 5;                       // exponential fog density
+    var position      = 0;                       // current camera Z position (add playerZ to get player's absolute Z position)
+    var speed         = 0;                       // current speed
+    var maxSpeed      = 2*segmentLength/step;      // top speed (ensure we can't move more than 1 segment in a single frame to make collision detection easier)
+    var accel         = 2* maxSpeed/5;             // acceleration rate - tuned until it 'felt' right
+    var breaking      = -maxSpeed;               // deceleration rate when braking
+    var decel         = -maxSpeed/5;             // 'natural' deceleration rate when neither accelerating, nor braking
+    var offRoadDecel  = -maxSpeed/1.3;             // off road deceleration is somewhere in between
+    var offRoadLimit  =  maxSpeed/4;             // limit when off road deceleration no longer applies (e.g. you can always go at least this speed even when off road)
+
+    var keyLeft       = false;
+    var keyRight      = false;
+    var keyFaster     = false;
+    var keySlower     = false;
+
+    //=========================================================================
+    // UPDATE THE GAME WORLD
+    //=========================================================================
+
+    function update(dt) {
+
+      position = Util.increase(position, dt * speed, trackLength);
+
+      var dx = dt * 2 * (speed/maxSpeed); // at top speed, should be able to cross from left to right (-1 to 1) in 1 second
+
+      if (keyLeft)
+        playerX = playerX - dx;
+      else if (keyRight)
+        playerX = playerX + dx;
+
+      if (keyFaster)
+        speed = Util.accelerate(speed, accel, dt);
+      else if (keySlower)
+        speed = Util.accelerate(speed, breaking, dt);
+      else
+        speed = Util.accelerate(speed, decel, dt);
+
+      if (((playerX < -1) || (playerX > 1)) && (speed > offRoadLimit))
+        speed = Util.accelerate(speed, offRoadDecel, dt);
+
+      playerX = Util.limit(playerX, -2, 2);     // dont ever let player go too far out of bounds
+      speed   = Util.limit(speed, 0, maxSpeed); // or exceed maxSpeed
+
+    }
+
+    //=========================================================================
+    // RENDER THE GAME WORLD
+    //=========================================================================
+
+    function render() {
+
+      var baseSegment = findSegment(position);
+      var maxy  = height;
+
+      // ctx.clearRect(0, 0, width, height);
+
+      Render.background(ctx, background, width, height, BACKGROUND.SKY);
+      Render.background(ctx, background, width, height, BACKGROUND.HILLS);
+      Render.background(ctx, background, width, height, BACKGROUND.TREES);
+
+      var n, segment;
+
+      for(n = 0 ; n < drawDistance ; n++) {
+
+        segment        = segments[(baseSegment.index + n) % segments.length];
+        segment.looped = segment.index < baseSegment.index;
+        segment.fog    = Util.exponentialFog(n/drawDistance, fogDensity);
+
+        Util.project(segment.p1, (playerX * roadWidth), cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+        Util.project(segment.p2, (playerX * roadWidth), cameraHeight, position - (segment.looped ? trackLength : 0), cameraDepth, width, height, roadWidth);
+
+        if ((segment.p1.camera.z <= cameraDepth) || // behind us
+            (segment.p2.screen.y >= maxy))          // clip by (already rendered) segment
+          continue;
+
+        Render.segment(ctx, width, lanes,
+                       segment.p1.screen.x,
+                       segment.p1.screen.y,
+                       segment.p1.screen.w,
+                       segment.p2.screen.x,
+                       segment.p2.screen.y,
+                       segment.p2.screen.w,
+                       segment.fog,
+                       segment.color);
+
+        maxy = segment.p2.screen.y;
+      }
+
+      Render.player(ctx, width, height, resolution, roadWidth, sprites, speed/maxSpeed,
+                    cameraDepth/playerZ,
+                    width/2,
+                    height,
+                    speed * (keyLeft ? -1 : keyRight ? 1 : 0),
+                    0);
+    }
+
+    //=========================================================================
+    // BUILD ROAD GEOMETRY
+    //=========================================================================
+
+    function resetRoad() {
+      segments = [];
+      for(var n = 0 ; n < 500 ; n++) {
+        segments.push({
+           index: n,
+           p1: { world: { z:  n   *segmentLength }, camera: {}, screen: {} },
+           p2: { world: { z: (n+1)*segmentLength }, camera: {}, screen: {} },
+           // color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
+           color: Math.floor(n/rumbleLength)%2 ? COLORS.DARK : COLORS.LIGHT
+        });
+      }
+
+      segments[findSegment(playerZ).index + 2].color = COLORS.START;
+      segments[findSegment(playerZ).index + 3].color = COLORS.START;
+      for(var n = 0 ; n < rumbleLength ; n++)
+        segments[segments.length-1-n].color = COLORS.FINISH;
+
+      trackLength = segments.length * segmentLength;
+    }
+
+    function findSegment(z) {
+      return segments[Math.floor(z/segmentLength) % segments.length];
+    }
+
+    //=========================================================================
+    // THE GAME LOOP
+    //=========================================================================
 
 
 
-      <!-- Update the game world -->
 
 
+    Game.run({
+      canvas: canvas, render: render, update: update, step: step,
+      images: ["background4", "sprites"],
+      keys: [
+        { keys: [KEY.LEFT,  KEY.A], mode: 'down', action: function() { keyLeft   = true;  } },
+        { keys: [KEY.RIGHT, KEY.D], mode: 'down', action: function() { keyRight  = true;  } },
+        { keys: [KEY.UP,    KEY.W], mode: 'down', action: function() { keyFaster = true;  } },
+        { keys: [KEY.DOWN,  KEY.S], mode: 'down', action: function() { keySlower = true;  } },
+        { keys: [KEY.LEFT,  KEY.A], mode: 'up',   action: function() { keyLeft   = false; } },
+        { keys: [KEY.RIGHT, KEY.D], mode: 'up',   action: function() { keyRight  = false; } },
+        { keys: [KEY.UP,    KEY.W], mode: 'up',   action: function() { keyFaster = false; } },
+        { keys: [KEY.DOWN,  KEY.S], mode: 'up',   action: function() { keySlower = false; } }
+      ],
+      ready: function(images) {
+        background = images[0];
+        sprites    = images[1];
+        reset();
+      }
+    });
 
+    function reset(options) {
+      options       = options || {};
+      canvas.width  = width  = Util.toInt(options.width,          width);
+      canvas.height = height = Util.toInt(options.height,         height);
+      lanes                  = Util.toInt(options.lanes,          lanes);
+      roadWidth              = Util.toInt(options.roadWidth,      roadWidth);
+      cameraHeight           = Util.toInt(options.cameraHeight,   cameraHeight);
+      drawDistance           = Util.toInt(options.drawDistance,   drawDistance);
+      fogDensity             = Util.toInt(options.fogDensity,     fogDensity);
+      fieldOfView            = Util.toInt(options.fieldOfView,    fieldOfView);
+      segmentLength          = Util.toInt(options.segmentLength,  segmentLength);
+      rumbleLength           = Util.toInt(options.rumbleLength,   rumbleLength);
+      cameraDepth            = 1 / Math.tan((fieldOfView/2) * Math.PI/180);
+      playerZ                = (cameraHeight * cameraDepth);
+      resolution             = height/1000;
 
-      <!-- Render the game world -->
+      if ((segments.length==0) || (options.segmentLength) || (options.rumbleLength))
+        resetRoad(); // only rebuild road when necessary
+    }
 
+    //=========================================================================
+    // TWEAK UI HANDLERS
+    //=========================================================================
 
+    // Dom.on('resolution', 'change', function(ev) {
+    // }
 
+    //=========================================================================
 
+  </script>
 
-      <!-- Build road geometry -->
-
-
-
-
-
-      <!-- The game loop -->
-
-
-
-
-      <!-- UI Handlers -->
-
-
-
-
-
-    </scrpit>
-
-
-  </body>
-</html>
+</body>
