@@ -32,7 +32,8 @@ This app will consist a full-screen canvas displaying everything within.
 
 Above is the game start wireframe, only with game start button and mute sound button.
 
-Above is the racing game wireframe, on top right there are stop button and mute sound button.
+![wireframe](https://raw.githubusercontent.com/1a2b3c4dBobAn/Blade-Racer/master/GitPics/bladeracerwireframe.png)
+Above is the racing game wireframe, on top right there are stop button.
 
 
 ## Architecture and Technologies
