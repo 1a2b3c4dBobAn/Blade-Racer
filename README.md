@@ -84,7 +84,9 @@ These parts will be done during job searching phase
 
 ## tutorial reference:
 https://codeincomplete.com/                         shout out for Jake Gordon!
+
 http://www.extentofthejam.com/pseudo/               shout out for Lou!
+
 Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies
 
 ## Art sources:
