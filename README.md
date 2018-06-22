@@ -83,4 +83,14 @@ These parts will be done during job searching phase
 
 
 ## tutorial reference:
-https://codeincomplete.com/
+https://codeincomplete.com/                         shout out for Jake Gordon!
+
+http://www.extentofthejam.com/pseudo/               shout out for Lou!
+
+Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies
+
+## Art sources:
+
+https://sketchfab.com/models/8cf75234d5ff4baf923bdabefd1ab9b7?ref=related
+Thanks all these artists for their fantastic works
+All images appeared in game are re-edited by Bob An
