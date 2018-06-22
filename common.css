@@ -2,5 +2,52 @@
 /* common styles used for v1 through v4 */
 /****************************************/
 
-body          { font-family: Arial, Helvetica, sans-serif; background-color: black}
+@font-face    { font-family:BLADRMF; src:url("/font/BLADRMF_.TTF");}
+html          { position: relative; min-height: 100vh;}
+body          { font-family: Arial, Helvetica, sans-serif,BLADRMF; background-color: black; color: red;}
 #canvas       { position: absolute; z-index: 0; width:99vw; height: 56vw; z-index: 0; background-color: black; image-rendering: pixelated;}
+.index-page   { align-items: center; margin: auto; align-items: center; justify-content: center; flex-direction: row;}
+.owl          { width: 35vw; height: 24vw; align-items: center; position: absolute; left: 25vw; bottom: 0;}
+h1            { font-family:BLADRMF; text-align: center; font-size: 7.5vw; text-shadow: 1px 1px 4vw red;}
+.instruction  { position: absolute; left: 60vw; bottom: 11.5vw; font-size: 0.7vw; font-family: 'Press Start 2P', cursive;}
+
+a    {
+  position: absolute; left: 42vw;
+  text-decoration: none; color: white;
+  font-family: 'Press Start 2P', cursive;
+  padding: 0.5vw; font-size: 1vw;
+  margin-top: 0.5vw;}
+a:hover       { background-color: red; box-shadow: 0 0 5vw red;}
+
+.owl {
+  -webkit-animation: owl-opacity 4s;
+  -webkit-animation-iteration-count: once;
+  animation: owl-opacity 4s;
+  animation-iteration-count: once;
+}
+
+
+@-webkit-keyframes owl-opacity {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes owl-opacity {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+.Loading-Div {
+  text-align: center;
+  font-size: 3vw;
+  color: red;
+  z-index: 100;
+  position: absolute;
+  left: 40vw;
+  top: 45vh;
+  font-family: BLADRMF;
+  -webkit-animation: text-flicker-out-glow 2s linear infinite both;
+  -moz-animation: text-flicker-out-glow 2s linear infinite both;
+  animation: text-flicker-out-glow 2s linear infinite both;
+}
