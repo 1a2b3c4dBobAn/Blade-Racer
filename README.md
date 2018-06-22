@@ -2,6 +2,7 @@ Welcome to the Blade-Racer wiki!
 
 This is my first game project inspired by old school pseudo 3d technique and my favorite movie Blade Runner.
 
+[SIT TIGHT!](https://1a2b3c4dboban.github.io/Blade-Racer/)
 
 ## Functionality & MVP
 
