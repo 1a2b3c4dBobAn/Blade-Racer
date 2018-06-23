@@ -2,7 +2,18 @@
 /* common styles used for v1 through v4 */
 /****************************************/
 
-@font-face    { font-family:BLADRMF; src:url("/font/BLADRMF_.TTF");}
+/* @font-face    { font-family:BLADRMF; src:url("/font/BLADRMF_.TTF");} */
+
+@font-face{
+	font-family: 'BLADRMF';
+	src: url('WebFont.eot');
+	src: url('WebFont.eot?#iefix') format('embedded-opentype'),
+	     url('WebFont.woff') format('woff'),
+	     url('WebFont.ttf') format('truetype'),
+	     url('WebFont.svg#webfont') format('svg');
+}
+
+
 html          { position: relative; min-height: 100vh;}
 body          { font-family: Arial, Helvetica, sans-serif,BLADRMF; background-color: black; color: red;}
 #canvas       { position: absolute; z-index: 0; width:99vw; height: 56vw; z-index: 0; background-color: black; image-rendering: pixelated;}
