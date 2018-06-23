@@ -72,7 +72,7 @@ A function called resetRoad then can use the road create function above to make 
       segments = [];
 
       addStraight(ROAD.LENGTH.SHORT/3);
-      addLowRollingHills(ROAD.LENGTH.MEDIUM, ROAD.HILL);
+      addLowRollingHills(ROAD.LENGTH.MEDIUM, ROAD.HILL.WAT);
       addStraight(ROAD.LENGTH.SHORT/4);
       addSCurves();
       addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY);
