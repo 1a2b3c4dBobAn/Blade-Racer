@@ -64,7 +64,7 @@ With addRoad, we can create several different helper functions to customized the
       addRoad(num, num, num, 0, height);
     }
 ```
-A function called resetRoad then can use the road create function above to create the whole road.
+A function called resetRoad then can use the road create function above to make the whole road.
 
 ```javascript
 
@@ -79,7 +79,6 @@ A function called resetRoad then can use the road create function above to creat
       addLowRollingHills(ROAD.LENGTH.MEDIUM, -ROAD.HILL.WAT);
       addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.SUPER);
       addStraight();
-      addSCurves();
       addLowRollingHills(ROAD.LENGTH.MEDIUM, ROAD.HILL.MEDIUM);
       addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
       addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.SUPER);
@@ -100,9 +99,9 @@ This app will consist a full-screen canvas displaying everything within.
 
 
 ## tutorial reference:
-https://codeincomplete.com/                         The project follows Jake Gordon's tutorial
+https://codeincomplete.com/     The project followed Jake Gordon's tutorial,it couldn't be done without his work
 
-http://www.extentofthejam.com/pseudo/               The concept of pseudo 3d is well explained by Lou's blog
+http://www.extentofthejam.com/pseudo/                   The concept of pseudo 3d is well explained by Lou's blog
 
 Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies.
 
