@@ -90,13 +90,12 @@ A function called resetRoad then can use the road create function above to make 
       ...
       }
 ```
-
-## Technologies
-
 ## Futrue features
 
-This app will consist a full-screen canvas displaying everything within.
-
+* Refactor the road editor
+* This game will have real game mechanism
+* Add different levels for the game
+* Add multiplayer feature
 
 ## tutorial reference:
 https://codeincomplete.com/     The project followed Jake Gordon's tutorial,it couldn't be done without his work
