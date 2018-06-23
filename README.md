@@ -4,6 +4,8 @@ This is my first game project inspired by old school pseudo 3d technique and my 
 
 [SIT TIGHT!](https://1a2b3c4dboban.github.io/Blade-Racer/)
 
+(The customized font is under construction, please ignore the default the font for now.)
+
 ## Functionality & MVP
 
 This game could give use the arcade playing experience online.
