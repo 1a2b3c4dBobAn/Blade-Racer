@@ -89,10 +89,17 @@ https://codeincomplete.com/                         shout out for Jake Gordon!
 
 http://www.extentofthejam.com/pseudo/               shout out for Lou!
 
-Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies
+Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies.
 
 ## Art sources:
 
+Some of art resources come from the orginal movies.
+
+Others comes from the following artists, many thanks for their fantastic works
 https://sketchfab.com/models/8cf75234d5ff4baf923bdabefd1ab9b7?ref=related
-Thanks all these artists for their fantastic works
+
+
+The background music is the work of German artist Zombie HyperDrive
+https://www.youtube.com/watch?v=NZf15xVrOW8
+
 All images appeared in game are re-edited by Bob An
