@@ -26,11 +26,13 @@ Above is the racing game wireframe, on top right there are stop button.
 
 ## Code snippet
 
+The Road in this project is one of the biggest challenge, a individual file named roadeditor is here to handle the problem. The addRoad function can take multiple argumenets to create the different road geometry.
+
 ```javascript
 
-    function addRoad(enter, hold, leave, curve, y) {
+    const addRoad = (enter, hold, leave, curve, y) => {
       var startY   = lastY();
-      var endY     = startY + (Util.toInt(y, 0) * segmentLength);
+      var endY     = startY + (Util.toInt(y * segmentLength);
       var n, total = enter + hold + leave;
       for(n = 0 ; n < enter ; n++)
         addSegment(Util.easeIn(0, curve, n/enter), Util.easeInOut(startY, endY, n/total));
@@ -39,6 +41,10 @@ Above is the racing game wireframe, on top right there are stop button.
       for(n = 0 ; n < leave ; n++)
         addSegment(Util.easeInOut(curve, 0, n/leave), Util.easeInOut(startY, endY, (enter+hold+n)/total));
     }
+
+```
+With addRoad, we can create several different helper functions to customized the road.
+```javascript
 
     function addStraight(num) {
       num = num || ROAD.LENGTH.MEDIUM;
@@ -57,7 +63,33 @@ Above is the racing game wireframe, on top right there are stop button.
       height = height || ROAD.HILL.LOW;
       addRoad(num, num, num, 0, height);
     }
+```
+A function called resetRoad then can use the road create function above to create the whole road.
 
+```javascript
+
+    function resetRoad() {
+      segments = [];
+
+      addStraight(ROAD.LENGTH.SHORT/3);
+      addLowRollingHills(ROAD.LENGTH.MEDIUM, ROAD.HILL);
+      addStraight(ROAD.LENGTH.SHORT/4);
+      addSCurves();
+      addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY);
+      addLowRollingHills(ROAD.LENGTH.MEDIUM, -ROAD.HILL.WAT);
+      addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.SUPER);
+      addStraight();
+      addSCurves();
+      addLowRollingHills(ROAD.LENGTH.MEDIUM, ROAD.HILL.MEDIUM);
+      addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM);
+      addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.SUPER);
+      addStraight();
+      addSCurves();
+      addLowRollingHills(ROAD.LENGTH.MEDIUM, -ROAD.HILL.MEDIUM);
+      addStraight(ROAD.LENGTH.SHORT);
+      addDownhillToEnd();
+      ...
+      }
 ```
 
 ## Technologies
@@ -68,9 +100,9 @@ This app will consist a full-screen canvas displaying everything within.
 
 
 ## tutorial reference:
-https://codeincomplete.com/                         shout out for Jake Gordon!
+https://codeincomplete.com/                         The project follows Jake Gordon's tutorial
 
-http://www.extentofthejam.com/pseudo/               shout out for Lou!
+http://www.extentofthejam.com/pseudo/               The concept of pseudo 3d is well explained by Lou's blog
 
 Many thanks for Ridley Scott Denis Villeneuve to create these fantastic movies.
 
